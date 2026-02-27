@@ -207,7 +207,7 @@ marimo/_lsp/
 __marimo__/
 
 # Firebase Connection
-firebase-credentials.json
+firebase_credentials.json
 
 # Google Cloud / Vertex AI
 vertex_credentials.json
