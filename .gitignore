@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Firebase Connection
+firebase-credentials.json
+
+# Google Cloud / Vertex AI
+vertex_credentials.json
