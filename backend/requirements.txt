@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+requests
+rapidfuzz
+google-generativeai
+python-dotenv
+slowapi
+python-multipart
+firebase-admin
+beautifulsoup4
+google-cloud-discoveryengine
+Pillow
