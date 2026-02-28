@@ -278,3 +278,6 @@ python -m uvicorn main:app --reload
 
 ## Demo & Resources
 
+- 🎥 **Video Presentation**: [Watch here](https://youtu.be/kMS4FwLXqHc)
+
+- 📑 **Presentation Slide**: [View slides](https://docs.google.com/presentation/d/1yAOz52HSiArIZr1ZtNE_Jw7qqwv-4FJ4fHZV-F68QDw/edit?usp=sharing)
