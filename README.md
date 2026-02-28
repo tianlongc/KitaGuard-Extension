@@ -1,9 +1,13 @@
 <div align="center">
-  <h2> KitaGuard - Your Personal AI Scam Defender</h2>
+  <h1> KitaGuard - Your Personal AI Scam Defender</h1>
   <img src="extension/icon.png" alt="KitaGuard Logo" width="150"/>
   <br><br>
   
   [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+![Python](https://img.shields.io/badge/Python%20|%203.9+-3776AB?logo=python&logoColor=white)  ![Chrome Extension](https://img.shields.io/badge/Chrome%20Extension-4285F4?logo=googlechrome&logoColor=white)
+  ![HTML](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+  ![CSS](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+  ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
 
 </div>
 
@@ -82,6 +86,7 @@ KitaGuard uses Google's Gemini 1.5 Multimodal AI and OSINT APIs to instantly ana
 ## 5. Implementation Details & Innovation
 
 ### System Architecture
+
 
 ### Workflow
 
