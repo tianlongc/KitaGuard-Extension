@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 15px;
+      margin: 0;
+      background-color: #f8f9fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; 
+      overflow-y: auto;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .header h2 {
+      margin: 0 0 8px 0;
+      color: #1f1f1f; 
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.5px;
+    }
+    .header span {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0b57d0;
+      background-color: #eef5ff;
+      padding: 4px 12px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 10px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    /* Drag & Drop Highlight */
+    .input-wrapper.drag-over {
+      border: 2px dashed #0b57d0;
+      background: #eef5ff;
+    }
+
+    /* The Text Input Area */
+    textarea {
+      border: none;
+      outline: none;
+      resize: none;
+      width: 100%;
+      font-family: inherit;
+      font-size: 14px;
+      min-height: 60px;
+      max-height: 180px; 
+      padding: 0;
+      background: transparent;
+      overflow-y: auto; 
+      box-sizing: border-box;
+    }
+
+    /* Action Bar (Paperclip & Send) */
+    .input-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 8px;
+    }
+
+    /* Buttons inside the wrapper */
+    .input-actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%; /* Circle buttons */
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #555;
+      transition: background 0.2s;
+    }
+
+    .input-actions button:hover {
+      background-color: #f0f0f0;
+      color: #d32f2f;
+    }
+    
+    /* Unified Button Styles for the Action Bar */
+    #verify-btn, #upload-btn {
+      color: #0b57d0; 
+      font-weight: 700; 
+      font-size: 20px;
+      transition: all 0.2s ease;
+    }
+
+    #verify-btn:hover, #upload-btn:hover {
+      background-color: #eef5ff; 
+      color: #0842a0; 
+    }
+
+    /* --- IMAGE PREVIEW --- */
+    .preview-hidden {
+      display: none !important;
+      visibility: hidden;
+      height: 0;
+      width: 0;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #image-preview-container {
+      position: relative;
+      width: 72px; 
+      height: 72px;
+      margin-bottom: 8px;
+      border: 1px solid #e0e0e0;
+      padding: 4px;
+      border-radius: 12px;
+      background: #f8f9fa;
+    }
+
+    #preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Crops to fit the square without stretching! */
+      display: block;
+      border-radius: 11px
+    }
+
+    #remove-image-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #444;
+      color: white;
+      border: 2px solid white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      transition: background 0.2s;
+    }
+
+    #remove-image-btn:hover {
+      background: #d32f2f;
+    }
+
+    /* --- RESULT BOX STYLES --- */
+    #result-box {
+    margin-top: 20px;
+    overflow: visible; 
+  }
+
+  /* Common Card Style for all results */
+  .result-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-left: 6px solid #ccc; /* Default color */
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  /* Status Colors (Border & Text) */
+  .status-danger { border-color: #d93025; }
+  .status-warning { border-color: #f9ab00; }
+  .status-safe { border-color: #1e8e3d; }
+  .status-unknown { border-color: #5f6368; }
+
+  /* Typography */
+  .status-header {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .headline {
+    font-size: 14px;
+    color: #5f6368;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .analysis-text {
+    margin-top: 10px;
+    line-height: 1.6;
+    color: #333;
+    font-size: 14px;
+    text-align: justify;
+  }
+
+  /* Clean List Styling */
+  .analysis-list {
+    margin: 0;
+    padding-left: 20px;
+    color: #3c4043;
+    line-height: 1.6;
+    font-size: 14px;
+    text-align: justify;
+  }
+
+  .analysis-list li {
+    margin-bottom: 8px; /* Space between points */
+  }
+
+  /* OCR Box - Minimalist Code Block */
+  .ocr-box {
+    margin-top: 20px;
+    background: #f1f3f4;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    color: #4a4a4a;
+    font-family: 'Roboto Mono', monospace;
+    border: 1px solid #e0e0e0;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Text Colors for Headers */
+  .text-danger { color: #d93025; }
+  .text-warning { color: #e37400; }
+  .text-safe { color: #1e8e3d; }
+  .text-unknown { color: #5f6368; }
+    
+    .source-link {
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+      text-decoration: none;
+      color: #0277bd;
+      font-weight: bold;
+    }
+
+  /* --- DYNAMIC LOADING STATE STYLES --- */
+  .loading-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-left: 6px solid #0b57d0; /* Google Blue */
+    font-size: 15px;
+    font-weight: 600;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: fadeIn 0.3s ease-in-out, pulse 1.5s infinite alternate;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>🛡️ KitaGuard</h2>
+    <span>Your Personal AI Protection Assistant</span>
+  </div>
+
+  <div class="input-wrapper" id="drop-zone">
+    
+    <div id="image-preview-container" class="preview-hidden">
+      <img id="preview-img" src="" />
+      <button id="remove-image-btn">×</button>
+    </div>
+
+    <textarea id="query-input" placeholder="Ask KitaGuard or paste text/image..." rows="1"></textarea>
+
+    <div class="input-actions">
+      <button id="upload-btn" title="Upload Image">+</button>
+      <button id="verify-btn" title="Scan Now">➤</button>
+    </div>
+
+    <input type="file" id="hidden-file-input" accept="image/*" style="display: none;">
+  </div>
+
+  <div id="result-box"></div>
+
+  <div id="report-container" style="display: none; margin-top: 15px; text-align: center;">
+      <p style="font-size: 12px; color: #666; margin-bottom: 5px;">
+          Think the AI missed a scam? Help the community!
+      </p>
+      <button id="report-btn" style="
+          background-color: #ff4d4f; 
+          color: white; 
+          border: none; 
+          padding: 8px 16px; 
+          border-radius: 6px; 
+          cursor: pointer; 
+          font-weight: bold;
+          transition: 0.3s;
+          width: 100%;">
+          🚨 Report as Scam
+      </button>
+  </div>
+  <script src="sidepanel.js"></script>
+</body>
+</html>
