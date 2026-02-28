@@ -77,10 +77,113 @@ KitaGuard uses Google's Gemini 1.5 Multimodal AI and OSINT APIs to instantly ana
 ## 6. Challenges Faced
 
 - **Handling Asynchronous OSINT Bottlenecks** <br>Scraping live government sites (like Sebenarnya.my) occasionally resulted in timeout errors. We overcame this by implementing strict 5-second connection timeouts and graceful try-except fallbacks, ensuring that if one OSINT layer fails, Vertex AI and Gemini can still deliver a highly accurate verdict.
-- **Upgrading from Custom Search API to Enterprise Vertex AI:** Initially, we utilized the standard Google Custom Search API to cross-reference user queries with the web. However, we quickly realized Google Custom Search JSON API is closed to new customers. We made the  decision to pivot to **Google Cloud Vertex AI Search** to build a custom Data Store strictly indexing official `*.gov.my` and `sebenarnya.my` domains.
+- **Upgrading from Custom Search API to Enterprise Vertex AI** <br>Initially, we utilized the standard Google Custom Search API to cross-reference user queries with the web. However, we quickly realized Google Custom Search JSON API is closed to new customers. We made the  decision to pivot to **Google Cloud Vertex AI Search** to build a custom Data Store strictly indexing official `*.gov.my` and `sebenarnya.my` domains.
 
 ## 7. Installation & Setup
 
+### 🔐 API Configuration
+
+1. **Create the `.env` file:**
+Inside the `backend/` folder, create a file named exactly `.env` and add the following keys:
+```ini
+# --- KITAGUARD API CONFIGURATION ---
+# Replace the placeholder text below with your actual API keys.
+# DO NOT share your real .env file or upload it to GitHub.
+
+# 1. Google Vertex AI Search (For checking official government sites)
+GOOGLE_CLOUD_PROJECT_ID=paste_your_google_cloud_project_id_here
+DATA_STORE_ID=paste_your_datastore_id_here
+
+# 2. Google Gemini (The AI Brain)
+GEMINI_API_KEY=paste_your_gemini_api_key_here
+
+# 3. VirusTotal (For scanning global malware threats)
+VIRUSTOTAL_API_KEY=paste_your_virustotal_api_key_here
+
+```
+
+#### 🔑 How to obtain your API Keys & Credentials?
+
+To run KitaGuard locally, you will need to set up free accounts for Google Cloud, Google AI Studio, and VirusTotal. Follow these steps to generate your keys:
+
+**Step 1: Get the Google Gemini API Key**
+1. Go to [Google AI Studio](https://aistudio.google.com/).
+2. Sign in with your Google account.
+3. On the left sidebar, click **Get API key**.
+4. Click the blue **Create API key** button.
+5. Copy this key. You will paste this as your `GEMINI_API_KEY`.
+
+**Step 2: Get the VirusTotal API Key**
+1. Go to [VirusTotal](https://www.virustotal.com/) and create a free account.
+2. Once logged in, click your profile picture in the top right corner.
+3. Select **API key** from the dropdown menu.
+4. Copy the alphanumeric string provided. You will paste this as your `VIRUSTOTAL_API_KEY`.
+
+**Step 3: Get Firebase Credentials (`firebase_credentials.json`)**
+1. Go to the [Firebase Console](https://console.firebase.google.com/) and click **Add Project** (or open an existing one).
+2. Go to Firestore Database enable
+3. Once inside your project, click the **Gear Icon** ⚙️ next to "Project Overview" in the top left sidebar and select **Project settings**.
+4. Navigate to the **Service accounts** tab.
+5. At Admin SDK configuration snippet, select `Python` and click the **Generate new private key** button at the bottom.
+6. This will download a `.json` file to your computer.
+7. Rename this file to exactly **`firebase_credentials.json`** and place it inside your `backend/` folder.
+
+#### 🏛️ Step 4: Get Vertex AI Search Credentials (`vertex_credentials.json`)
+
+**Part A: Project ID & Data Store ID**
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Your **Google Cloud Project ID** is listed on your dashboard (e.g., `my-project-12345`). Save this as your `GOOGLE_CLOUD_PROJECT_ID`.
+3. Search for **Agent Builder** and go for **Vertex AI Search** in the top search bar.
+4. Click `Create Custom Search`
+5. Click **Data Stores** in the left menu, then **Create Data Store**.
+6. Select **Website URLs** and add `*.gov.my/*`, `*.sebenarnya.my/`, `*.pdrm.gov.my/*` and `*.bnm.gov.my/*` name them as `Malaysian-Official-Sources`.
+7. Once created, click on your new Data Store. You will find the **Data Store ID** on the configuration page. Save this as your `DATA_STORE_ID`.
+
+**Part B: The JSON Key**
+
+1. In the Google Cloud Console, search for **Service Accounts** (under IAM & Admin).
+2. Click **Create Service Account**, give it a name, and click **Create and Continue**.
+3. Under *Grant this service account access to project*, select the role: **Discovery Engine Editor** (or Owner). Click Done.
+4. Click on your newly created Service Account, navigate to the **Keys** tab.
+5. Click **Add Key** -> **Create new key** -> select **JSON** and click Create.
+6. Rename the downloaded file to exactly **`vertex_credentials.json`** and place it inside your `backend/` folder.
+
+---
+
+2. **Add the JSON Credential Files:**
+You must place two specific Google Service Account files directly into your `backend/` folder alongside `main.py`:
+* `firebase_credentials.json` (For connecting to the Firestore database).
+* `vertex_credentials.json` (For authenticating the Vertex AI Search engine).
+
+> [!IMPORTANT]
+> Never upload your `.env` or `.json` credential files to GitHub! Make sure they are listed in your `.gitignore` file.
+
+### ⚙️ Backend Setup
+
+Ensure you have Python installed (Python 3.9+ recommended). Open your terminal and run the following commands:
+```bash
+# 1. Navigate to the backend folder
+cd backend
+
+# 2. (Optional but Recommended) Create a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Start the FastAPI server
+python -m uvicorn main:app --reload
+
+```
+
+### 🧩 Extension Installation
+
+1. Open Google Chrome and navigate to `chrome://extensions/`.
+2. Enable **Developer mode** in the top right corner.
+3. Click **Load unpacked** and select the `extension/` directory of this repository.
+4. Pin KitaGuard to your toolbar and start scanning!
 
 ## 8. Future Roadmap
 
