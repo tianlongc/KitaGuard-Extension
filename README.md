@@ -47,16 +47,35 @@ KitaGuard uses Google's Gemini 1.5 Multimodal AI and OSINT APIs to instantly ana
 - **Community-Driven Reporting:** Users can flag missed scams, which instantly updates a global, real-time database to protect other users.
 - **Seamless Browser Integration:** Right-click any image, link, or text to "Scan with KitaGuard" via the Chrome context menu.
 
-## Overview of Technologies used
+## 4. Overview of Technologies used
 
-## Implementation Details & Innovation
+### ☁️ Google Cloud Technologies (Core Infrastructure & AI)
+
+| Technology | Purpose |
+| :--- | :--- |
+| [![Gemini API](https://img.shields.io/badge/Gemini%201.5%20Flash-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)](https://ai.google.dev/) <br>**Google Gemini 1.5 Flash** | Powers the core reasoning, OCR extraction, and multilingual (Malay/English) contextual analysis. |
+| [![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com) <br>**Google Cloud Vertex AI** | Custom search engine utilized to index and query official government data stores. |
+| [![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://firebase.google.com/) <br>**Firebase Firestore** | A scalable NoSQL cloud database managing real-time community scam reports and threat counters. |
+| [![VirusTotal](https://img.shields.io/badge/VirusTotal-3949AB?style=for-the-badge&logo=virustotal&logoColor=white)](https://www.virustotal.com/) <br>**VirusTotal API (Google Cloud Security)** | Provides enterprise-grade, real-time URL and domain scanning to detect typosquatting and malicious links. |
+
+### 🛠️ Supporting Tools & Libraries
+
+| Technology | Purpose |
+| :--- | :--- |
+| [![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org/) [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/) <br>**Backend Engine** | High-performance asynchronous API layer handling core business logic, routing and external integrations. |
+| [![Uvicorn](https://img.shields.io/badge/Uvicorn-499848?style=for-the-badge&logo=gunicorn&logoColor=white)](https://www.uvicorn.org/) <br>**API Infrastructure & Security** | Powered by **Uvicorn** (ASGI server) for deployment, **SlowAPI** for rate-limiting to prevent abuse and **python-dotenv** for secure environment configurations. |
+| [![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-2B5B84?style=for-the-badge&logo=python&logoColor=white)](https://www.crummy.com/software/BeautifulSoup/) [![Pillow](https://img.shields.io/badge/Pillow-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python-pillow.org/) <br>**Data Extraction & Processing** | Utilizes **BeautifulSoup4** for web scraping, **Pillow** for image processing and OCR preparation and **RapidFuzz** for fuzzy string matching. |
+| [![Chrome Extension](https://img.shields.io/badge/Chrome_Extension-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://developer.chrome.com/docs/extensions/) <br>**Google Chrome Extension API (Manifest V3)** | The native browser framework powering our frontend interface and real-time execution. |
+| [![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)](https://en.wikipedia.org/wiki/HTML5) [![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)](https://en.wikipedia.org/wiki/CSS3) <br>**Frontend & Extension UI** | Standard web stack utilized for rendering the extension popup, responsive layouts and interactive dashboard elements. |
+
+## 5. Implementation Details & Innovation
 
 ### System Architecture
 
 ### Workflow
 
-## Challenges Faced
+## 6. Challenges Faced
 
-## Installation & Setup
+## 7. Installation & Setup
 
-## Future Roadmap
+## 8. Future Roadmap
