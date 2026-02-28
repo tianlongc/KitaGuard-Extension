@@ -271,7 +271,10 @@ python -m uvicorn main:app --reload
 
 ## 8. Future Roadmap
 
-- **WhatsApp Companion Bot:** Porting the FastAPI backend to interface with WhatsApp for mobile-first users who do not use desktop browsers.
-- **Voice Scam Detector:** Analyze real-time phone calls or voice messages using speech-to-text and LLMs to detect AI-generated voice cloning and deepfakes.
-- **On-Device Machine Learning:** Integrating a lightweight TensorFlow.js model directly into the Chrome Extension to detect basic phishing keywords offline.
-- **Automated MCMC Reporting:** A feature to automatically package and forward high-confidence danger alerts directly to the relevant Malaysian authorities.
+- [ ] **WhatsApp Companion Bot:** Porting the FastAPI backend to interface with WhatsApp for mobile-first users who do not use desktop browsers.
+- [ ] **Voice Scam Detector:** Analyze real-time phone calls or voice messages using speech-to-text and LLMs to detect AI-generated voice cloning and deepfakes.
+- [ ] **On-Device Machine Learning:** Integrating a lightweight TensorFlow.js model directly into the Chrome Extension to detect basic phishing keywords offline.
+- [ ] **Automated MCMC Reporting:** A feature to automatically package and forward high-confidence danger alerts directly to the relevant Malaysian authorities.
+
+## Demo & Resources
+
