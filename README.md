@@ -76,6 +76,14 @@ KitaGuard uses Google's Gemini 1.5 Multimodal AI and OSINT APIs to instantly ana
 
 ## 6. Challenges Faced
 
+- **Handling Asynchronous OSINT Bottlenecks** <br>Scraping live government sites (like Sebenarnya.my) occasionally resulted in timeout errors. We overcame this by implementing strict 5-second connection timeouts and graceful try-except fallbacks, ensuring that if one OSINT layer fails, Vertex AI and Gemini can still deliver a highly accurate verdict.
+- **Upgrading from Custom Search API to Enterprise Vertex AI:** Initially, we utilized the standard Google Custom Search API to cross-reference user queries with the web. However, we quickly realized Google Custom Search JSON API is closed to new customers. We made the  decision to pivot to **Google Cloud Vertex AI Search** to build a custom Data Store strictly indexing official `*.gov.my` and `sebenarnya.my` domains.
+
 ## 7. Installation & Setup
 
+
 ## 8. Future Roadmap
+
+- **WhatsApp Companion Bot:** Porting the FastAPI backend to interface with WhatsApp for mobile-first users who do not use desktop browsers.
+- **On-Device Machine Learning:** Integrating a lightweight TensorFlow.js model directly into the Chrome Extension to detect basic phishing keywords offline.
+- **Automated MCMC Reporting:** A feature to automatically package and forward high-confidence danger alerts directly to the relevant Malaysian authorities.
