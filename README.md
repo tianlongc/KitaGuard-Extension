@@ -101,6 +101,18 @@ KitaGuard uses Google's Gemini 1.5 Multimodal AI and OSINT APIs to instantly ana
 
 ## 7. Installation & Setup
 
+### 🚀 Getting Started
+
+**Prerequisites**
+- Python 3.9+
+- Git / Git Bash
+
+Open your terminal and clone the repository:
+```bash
+git clone https://github.com/tianlongc/KitaGuard-Extension.git
+cd KitaGuard-Extension
+```
+
 ### 🔐 API Configuration
 
 #### Create the `.env` file:
@@ -161,7 +173,7 @@ To run KitaGuard locally, you will need to set up free accounts for Google Cloud
 5. In the configuration menu, tick **Enterprise edition features** and **Advanced LLM features** (or Generative features). Enter your app name, company name and choose **global (Global)** as your location. Click **Continue**.
 6. Click **Data Stores** in the left menu, then **Create Data Store**.
 7. Select **Website Content** and add `*.gov.my/*`, `*.sebenarnya.my/`, `*.pdrm.gov.my/*` and `*.bnm.gov.my/*`. Keep advanced indexing disabled for standard pricing, and name the data store `Malaysian-Official-Sources`.
-9. Once created with **General pricing**, click on your new Data Store. You will find the **Data Store ID** on the configuration page. Save this as your `DATA_STORE_ID`.
+8. Once created with **General pricing**, click on your new Data Store. You will find the **Data Store ID** on the configuration page. Save this as your `DATA_STORE_ID`.
 
 **Part B: The JSON Key**
 
@@ -174,10 +186,10 @@ To run KitaGuard locally, you will need to set up free accounts for Google Cloud
 
 ---
 
-#### Add the JSON Credential Files:
-You must place two specific Google Service Account files directly into your `backend/` folder alongside `main.py`:
-* `firebase_credentials.json` (For connecting to the Firestore database).
-* `vertex_credentials.json` (For authenticating the Vertex AI Search engine).
+> [!NOTE]
+> You must place two specific Google Service Account files directly into your `backend/` folder alongside `main.py`:
+> * `firebase_credentials.json` (For connecting to the Firestore database).
+> * `vertex_credentials.json` (For authenticating the Vertex AI Search engine).
 
 > [!IMPORTANT]
 > Never upload your `.env` or `.json` credential files to GitHub! Make sure they are listed in your `.gitignore` file.
