@@ -15,7 +15,7 @@
 
 ## 1. Repository Overview & Team Introduction
 
-**KitaGuard** is a browser extension and backend service designed to protect users from online scams, phishing attempts, and fraudulent URLs.  
+**KitaGuard** is a browser extension and backend service designed to protect users from online scams, phishing attempts and fraudulent URLs.  
 
 **Team Members:**  
 - **Choo Tian Long** – Frontend & Backend Integration
@@ -45,6 +45,41 @@ In Malaysia, online fraud is a rapidly growing national problem. Over 67,000 onl
 ### Short Description of the Solution
 KitaGuard uses Google's Gemini 1.5 Multimodal AI and OSINT APIs to instantly analyze suspicious links, phone numbers and scam posters. With seamless drag-and-drop capabilities and context-menu integration, KitaGuard provides instant, traffic-light verdicts (SAFE, SUSPICIOUS, DANGER) without interrupting your web browsing experience.
 
+### 📂 Project Structure
+
+```text
+KitaGuard-Extension/
+├── backend/                        # FastAPI Backend & OSINT Engine
+│   ├── main.py                     # Core API routing & Gemini AI synthesis
+│   ├── osint_service.py            # Scraping & API logic (VirusTotal, Sebenarnya.my)
+│   ├── requirements.txt            # Python dependencies (FastAPI, uvicorn, etc.)
+│   ├── .env                        # [PRIVATE] API keys for Gemini & VirusTotal
+│   ├── vertex_credentials.json     # [PRIVATE] GCP Service Account for Vertex AI
+│   └── firebase_credentials.json   # [PRIVATE] Firebase Admin SDK key
+│
+├── extension/                     # Chrome Extension (Manifest V3)
+│   ├── manifest.json              # Permissions, service workers, & panel config
+│   ├── background.js              # Service worker: Context menus & messaging
+│   ├── content.js                 # DOM scanner: Detects & highlights phone numbers
+│   ├── sidepanel.html             # UI: The main interface for scam analysis
+│   ├── sidepanel.js               # Logic: Handles drag-and-drop & API requests
+│   └── icon.png                   # Extension brand assets
+│
+├── images/                        # Documentation Assets
+│   ├── architecture.png           # System design diagram
+│   ├── workflow.png               # Data flow from UI to Backend
+│   ├── snapshot-1.png             # UI Screenshot
+│   └── snapshot-2.png             # UI Screenshot: OSINT results
+│
+├── .gitignore                     # Prevents credentials/env from being leaked
+├── LICENSE                        # MIT License
+└── README.md                      # Setup instructions and project overview
+```
+
+| Sidebar Interface | Sample Detection Output |
+| :-- | :-- |
+| <img src="images/snapshot-1.png" witdh="100%"> | <img src="images/snapshot-2.png" witdh="100%">
+
 ---
 
 ## 3. Key Features
@@ -66,7 +101,7 @@ KitaGuard uses Google's Gemini 1.5 Multimodal AI and OSINT APIs to instantly ana
 
 | Technology | Purpose |
 | :--- | :--- |
-| [![Gemini API](https://img.shields.io/badge/Gemini%201.5%20Flash-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)](https://ai.google.dev/) <br>**Google Gemini 1.5 Flash** | Powers the core reasoning, OCR extraction, and multilingual (Malay/English) contextual analysis. |
+| [![Gemini API](https://img.shields.io/badge/Gemini%201.5%20Flash-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)](https://ai.google.dev/) <br>**Google Gemini 1.5 Flash** | Powers the core reasoning, OCR extraction and multilingual (Malay/English) contextual analysis. |
 | [![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com) <br>**Google Cloud Vertex AI** | Custom search engine utilized to index and query official government data stores. |
 | [![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://firebase.google.com/) <br>**Firebase Firestore Database** | A scalable NoSQL cloud database managing real-time community scam reports and threat counters. |
 | [![VirusTotal](https://img.shields.io/badge/VirusTotal-3949AB?style=for-the-badge&logo=virustotal&logoColor=white)](https://www.virustotal.com/) <br>**VirusTotal API (Google Cloud Security)** | Provides enterprise-grade, real-time URL and domain scanning to detect typosquatting and malicious links. |
@@ -86,9 +121,21 @@ KitaGuard uses Google's Gemini 1.5 Multimodal AI and OSINT APIs to instantly ana
 ## 5. Implementation Details & Innovation
 
 ### System Architecture
+<img src="images/architecture.png" width="100%"/>
 
+- **Client Tier:** A Manifest V3 Chrome Extension featuring a passive DOM scanner (`content.js`) a background worker for context menus and a responsive Side Panel UI.
+- **Security Perimeter:** An Edge/API Gateway (e.g., Cloudflare/Nginx) intercepts traffic to provide DDoS protection and strict rate-limiting before it hits the application server.
+- **Application Tier:** An asynchronous FastAPI backend equipped with a Redis/In-Memory Cache to store high-frequency queries. The core engine utilizes `httpx` and `asyncio.gather` to manage network requests without blocking the event loop.
+- **External Intelligence Tier:** Integrates Google Cloud services (Vertex AI Data Store, Gemini 1.5/2.0 API) and external OSINT databases (Firebase Firestore, VirusTotal, Sebenarnya.my) for comprehensive threat analysis.
 
 ### Workflow
+<img src="images/workflow.png" width="100%"/>
+
+1. A user submits a suspicious query or image via the extension, which is sanitized by the API Gateway before reaching the FastAPI backend.
+2. The router immediately checks the Redis/LRU Cache. If an identical scan was performed recently, a "Cache Hit" instantly returns the JSON verdict, bypassing all expensive external API calls.
+3. On a "Cache Miss", the backend initiates a True Parallel enrichment phase. Using `asyncio.gather`, the system simultaneously triggers asynchronous checks against Firebase, Vertex AI, VirusTotal and Sebenarnya.my. Total wait time is bound only by the single slowest response, rather than the sum of all requests.
+4. The aggregated OSINT data and user payload are sent asynchronously to the Gemini API, which evaluates psychological risk factors and extracts OCR text.
+5. The structured JSON verification is cached (e.g., with a 12-hour TTL), returned to the Chrome Extension and dynamically rendered as a Verdict Card for the user.
 
 ---
 
@@ -136,7 +183,7 @@ VIRUSTOTAL_API_KEY=paste_your_virustotal_api_key_here
 
 #### 🔑 How to obtain your API Keys & Credentials?
 
-To run KitaGuard locally, you will need to set up free accounts for Google Cloud, Google AI Studio, and VirusTotal. Follow these steps to generate your keys:
+To run KitaGuard locally, you will need to set up free accounts for Google Cloud, Google AI Studio and VirusTotal. Follow these steps to generate your keys:
 
 **Step 1: Get the Google Gemini API Key**
 1. Go to [Google AI Studio](https://aistudio.google.com/).
@@ -154,7 +201,7 @@ To run KitaGuard locally, you will need to set up free accounts for Google Cloud
 
 **Step 3: Get Firebase Credentials (`firebase_credentials.json`)**
 1. Go to the [Firebase Console](https://console.firebase.google.com/) and click **Create a new Firebase project** (or open an existing one).
-2. In the left-hand sidebar, expand the "Build" menu, select **Firestore Database**, and click **Create database** to initialize and enable it.
+2. In the left-hand sidebar, expand the "Build" menu, select **Firestore Database** and click **Create database** to initialize and enable it.
 3. In the setup menu, select the **Standard edition** and set your location to **asia-southeast1 (Singapore)**
 4. Choose to **Start in test mode** and click **Create** to finish enabling the database. (Note: Test mode allows open reads and writes for 30 days)
 5. Once the database setup is complete, click the **Gear Icon** ⚙️ next to "Project Overview" in the top left sidebar and select **Project settings**.
@@ -172,13 +219,13 @@ To run KitaGuard locally, you will need to set up free accounts for Google Cloud
 4. Click `Create` for **Custom search (general)**
 5. In the configuration menu, tick **Enterprise edition features** and **Advanced LLM features** (or Generative features). Enter your app name, company name and choose **global (Global)** as your location. Click **Continue**.
 6. Click **Data Stores** in the left menu, then **Create Data Store**.
-7. Select **Website Content** and add `*.gov.my/*`, `*.sebenarnya.my/`, `*.pdrm.gov.my/*` and `*.bnm.gov.my/*`. Keep advanced indexing disabled for standard pricing, and name the data store `Malaysian-Official-Sources`.
+7. Select **Website Content** and add `*.gov.my/*`, `*.sebenarnya.my/`, `*.pdrm.gov.my/*` and `*.bnm.gov.my/*`. Keep advanced indexing disabled for standard pricing and name the data store `Malaysian-Official-Sources`.
 8. Once created with **General pricing**, click on your new Data Store. You will find the **Data Store ID** on the configuration page. Save this as your `DATA_STORE_ID`.
 
 **Part B: The JSON Key**
 
 1. In the Google Cloud Console, search for **Service Accounts** (under IAM & Admin).
-2. Click **Create service account**, name it `kitaguard-vertex-search`, and click **Create and Continue**.
+2. Click **Create service account**, name it `kitaguard-vertex-search` and click **Create and Continue**.
 3. Under **Permissions (optional)**, select the role: **Discovery Engine Viewer**. Click Continue. Skip **Principals with access (optional)**
 4. Click on your newly created Service Account, navigate to the **Keys** tab.
 5. Click **Add Key** -> **Create new key** -> select **JSON** and click Create.
